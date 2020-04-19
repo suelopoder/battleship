@@ -43,14 +43,14 @@ const Cell = ({ data, onEnter, onLeave, onClick }: CellProps) => (
 
 interface BoatData {
   position: Position,
-  length: number,
-  align: string, // FIXME use ALIGNMENT
+  size: number,
+  alignment: string, // FIXME use ALIGNMENT
   color?: string,
 };
 
 const Boat = (boat: BoatData) => {
-  let height = boat.align === ALIGNMENT.HORIZONTAL ? boat.length * CELL_SIZE: CELL_SIZE;
-  let width = boat.align === ALIGNMENT.VERTICAL ? boat.length * CELL_SIZE: CELL_SIZE;
+  let height = boat.alignment === ALIGNMENT.HORIZONTAL ? boat.size * CELL_SIZE: CELL_SIZE;
+  let width = boat.alignment === ALIGNMENT.VERTICAL ? boat.size * CELL_SIZE: CELL_SIZE;
   height -= CELL_SPACE;
   width -= CELL_SPACE;
 
@@ -76,6 +76,7 @@ const GAME_SATES = {
 function App() {
   const [gameState, setGameState] = useState(GAME_SATES.ADDING_BOAT);
   const [alignment, setAlignment] = useState(ALIGNMENT.HORIZONTAL);
+  const [size, setSize] = useState(3);
   const [selectedCell, setSelectedCell] = useState<Position | null>(null);
   const [boats, setBoats] = useState<BoatData[]>([]);
 
@@ -97,7 +98,7 @@ function App() {
               data={{ x, y }}
               onEnter={() => setSelectedCell({ x, y })}
               onLeave={() => setSelectedCell(null)}
-              onClick={() => selectedCell && addBoat({ position: selectedCell, align: alignment, length: 3 })}
+              onClick={() => selectedCell && addBoat({ position: selectedCell, alignment, size })}
             />
           )
         )}
@@ -105,8 +106,8 @@ function App() {
         {gameState === GAME_SATES.ADDING_BOAT && selectedCell &&
           <Boat
             position={selectedCell as Position}
-            align={alignment}
-            length={3}
+            alignment={alignment}
+            size={size}
             color="red"
           />
         }
@@ -120,6 +121,8 @@ function App() {
           <input type="radio" name="alignment_horizontal" checked={alignment === ALIGNMENT.HORIZONTAL} onChange={() => setAlignment(ALIGNMENT.HORIZONTAL)} />
           <label htmlFor="alignment_vertical">Vertical</label>
           <input type="radio" name="alignment_vertical" checked={alignment === ALIGNMENT.VERTICAL} onChange={() => setAlignment(ALIGNMENT.VERTICAL)} />
+          <label htmlFor="size">Size</label>
+          <input type="number" name="size" value={size} onChange={ev => setSize(Number(ev.target.value))} />
         </>
       }
     </>
