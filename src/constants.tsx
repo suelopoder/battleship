@@ -2,6 +2,8 @@ export const BOARD_SIZE = 10;
 export const CELL_SPACE = 2;
 export const CELL_SIZE = 16 + CELL_SPACE * 2;
 
+export const AI_DELAY = 300;
+
 export const ALIGNMENT = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',

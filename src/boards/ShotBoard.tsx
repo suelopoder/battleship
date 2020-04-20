@@ -11,13 +11,14 @@ export type Shot = {
 type ShotBoardProps = {
   history: Shot[],
   onShot: (position: Position) => void,
+  playerTurn: boolean,
 }
 
 const ShotBoard = (props: ShotBoardProps) => {
-  const { history, onShot } = props;
+  const { history, onShot, playerTurn } = props;
   return (
     <div className="shot-board">
-      <h2>Shot here!</h2>
+      <h2>{playerTurn ? 'Shot here!' : 'Waiting on AI...'}</h2>
       <div style={{ height: PIXEL_SIZE, width: PIXEL_SIZE, position: 'relative' }}>
         {BOARD_ARRAY.map((col, x) =>
           col.map((y) => {
