@@ -5,6 +5,9 @@
 .game {
   margin: var(--size);
   position: relative;
+}
+
+.boards {
   display: flex;
 }
 

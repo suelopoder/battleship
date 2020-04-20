@@ -4,6 +4,7 @@ import Boat, { BoatData } from '../Boat';
 import { Shot } from '../boards/ShotBoard';
 import { Position } from '../constants';
 import { BOARD_ARRAY, PIXEL_SIZE } from './constants';
+import { isValidBoatPosition } from '../helpers';
 
 export type BoardProps = {
   boats: BoatData[],
@@ -11,10 +12,12 @@ export type BoardProps = {
   onEnterCell?: (position: Position) => void,
   onLeaveCell?: () => void,
   onClick?: (position: Position) => void,
+  newBoat?: BoatData,
 }
 
 const Board = (props: BoardProps) => {
-  const { onEnterCell, onLeaveCell, onClick, history } = props;
+  const { onEnterCell, onLeaveCell, onClick, history, boats, newBoat } = props;
+  const isValidBoat = isValidBoatPosition(boats);
   return (
     <div>
       <h2>Main board</h2>
@@ -34,8 +37,16 @@ const Board = (props: BoardProps) => {
             );
           })
         )}
-        {props.boats.map(boat =>
+        {boats.map(boat =>
           <Boat key={`${boat.position.x}_${boat.position.y}`} {...boat} />)
+        }
+        {newBoat &&
+          <Boat
+            position={newBoat.position as Position}
+            alignment={newBoat.alignment}
+            size={newBoat.size}
+            color={isValidBoat(newBoat) ? "blue" : "red"}
+          />
         }
       </div>
     </div>
