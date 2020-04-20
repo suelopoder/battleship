@@ -2,7 +2,7 @@
   --size: 16px;
 }
 
-.board {
+.game {
   margin: var(--size);
   position: relative;
 }
