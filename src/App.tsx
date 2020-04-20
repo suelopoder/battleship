@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import { Position, ALIGNMENT, AI_DELAY } from './constants';
+import { Position, ALIGNMENT, AI_DELAY, HIT_RESULT, API_GAME_STATUS } from './constants';
 import Board from './boards/Board';
 import { BoatData } from './Boat';
 import { GAME_SATES } from './game-states/constants';
@@ -9,6 +9,7 @@ import SetupGame from './game-states/SetupGame';
 import GameEnd from './game-states/GameEnd';
 import ShotBoard, { Shot } from './boards/ShotBoard';
 import { isValidBoatPosition, generateRandom, shotOnTarget } from './helpers';
+import API from './API';
 
 const getRandomName = () => `Annon_${Math.floor(Math.random()*100)}`;
 
@@ -29,19 +30,21 @@ function App() {
     }
   }
 
-  const onShot = (position: Position) => {
+  const onShot = async (position: Position) => {
     if (gameState !== GAME_SATES.GAME_STARTED || !playerTurn) {
       return;
     }
 
+    const playResult = await API.userPlay(position);
+
     setShotHistory([
       ...shotHistory, {
         position,
-        data: 'x',
+        data: playResult.hitResult === HIT_RESULT.WATER ? 'x' : 'o',
       }
     ]);
 
-    if (shotHistory.length >= 3) {
+    if (playResult.gameStatus !== API_GAME_STATUS.ONGOING) {
       setTimeout(() => setGameState(GAME_SATES.END), AI_DELAY);
       return;
     }
@@ -67,6 +70,11 @@ function App() {
       }
     ]);
     setPlayerTurn(true);
+  }
+
+  const onStart = async () => {
+    await API.startGame(boats);
+    setGameState(GAME_SATES.GAME_STARTED);
   }
 
   const onRestart = () => {
@@ -111,7 +119,7 @@ function App() {
         {gameState === GAME_SATES.SETUP &&
           <SetupGame
             onAddBoat={() => setGameState(GAME_SATES.ADDING_BOAT)}
-            onStart={() => setGameState(GAME_SATES.GAME_STARTED)}
+            onStart={onStart}
             username={username}
             serUsername={serUsername}
           />

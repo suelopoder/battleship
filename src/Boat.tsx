@@ -5,7 +5,7 @@ export interface BoatData {
   position: Position,
   size: number,
   alignment: string, // FIXME use ALIGNMENT
-  color?: string,
+  color?: string, // FIXME smell for bad design
 };
 
 const Boat = (boat: BoatData) => {

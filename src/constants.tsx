@@ -9,6 +9,18 @@ export const ALIGNMENT = {
   VERTICAL: 'vertical',
 }
 
+export const HIT_RESULT = {
+  WATER: 'water',
+  HIT: 'hit!',
+  SANK: 'sank!',
+};
+
+export const API_GAME_STATUS = {
+  ONGOING: 'ongoing',
+  USER_WON: 'user_won',
+  FOE_WON: 'foe_won',
+}
+
 export class Position {
   public x: number;
   public y: number;

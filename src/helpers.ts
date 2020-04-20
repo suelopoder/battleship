@@ -4,7 +4,7 @@ import { BoatData } from './Boat';
 export const generateRandom = (max:number = BOARD_SIZE): number =>
   Math.floor(Math.random() * max);
 
-const getBoatPositionArray = (boat: BoatData): Position[] => {
+export const getBoatPositionArray = (boat: BoatData): Position[] => {
   if (boat.alignment === ALIGNMENT.HORIZONTAL) {
     return [...Array(boat.size).keys()].map(index =>
       new Position(boat.position.x + index, boat.position.y)
@@ -30,16 +30,19 @@ const boatCollides = (boat1: BoatData, boat2: BoatData): boolean => {
   return false;
 }
 
-export const shotOnTarget = (boats: BoatData[]) => (position: Position) => {
+export const shotOnTarget = (boats: BoatData[]) => (position: Position): boolean => {
+  return getTargetShot(boats)(position) !== undefined;
+}
+
+export const getTargetShot = (boats: BoatData[]) => (position: Position): BoatData | undefined => {
   for (const boat of boats) {
     const boatPositions = getBoatPositionArray(boat);
     for (const currentPosition of boatPositions) {
       if (currentPosition.equals(position)) {
-        return true;
+        return boat;
       }
     }
   }
-  return false;
 }
 
 export const isValidBoatPosition = (boats: BoatData[]) => (newBoat: BoatData): boolean => {
@@ -63,4 +66,13 @@ export const isValidBoatPosition = (boats: BoatData[]) => (newBoat: BoatData): b
   }
 
   return true;
+}
+
+export const positionInArray = (position: Position, array: Position[]): boolean => {
+  for (const currentPosition of array) {
+    if (currentPosition.equals(position)) {
+      return true;
+    }
+  }
+  return false;
 }
