@@ -9,12 +9,22 @@ interface AddingBoatProps {
   size: number,
   setSize: (size: number) => void,
   isValidBoat: (position: BoatData) => boolean,
+  onDone: () => void,
 };
 
 const AddingBoat = (props: AddingBoatProps) => {
-  const { selectedCell, alignment, size, setAlignment, setSize, isValidBoat } = props;
+  const {
+    selectedCell,
+    alignment,
+    setAlignment,
+    size,
+    setSize,
+    isValidBoat,
+    onDone
+  } = props;
+
   return (
-    <>
+    <form>
       {selectedCell &&
         <Boat
           position={selectedCell as Position}
@@ -47,7 +57,8 @@ const AddingBoat = (props: AddingBoatProps) => {
         name="size" value={size}
         onChange={ev => setSize(Number(ev.target.value))}
       />
-    </>
+      <input type="submit" onClick={onDone} value="Done!" />
+    </form>
   )
 }
 
