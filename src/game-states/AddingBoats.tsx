@@ -9,7 +9,7 @@ interface AddingBoatProps {
   onDone: () => void,
 };
 
-const AddingBoat = (props: AddingBoatProps) => {
+const AddingBoats = (props: AddingBoatProps) => {
   const {
     alignment,
     setAlignment,
@@ -54,4 +54,4 @@ const AddingBoat = (props: AddingBoatProps) => {
   )
 }
 
-export default AddingBoat;
+export default AddingBoats;

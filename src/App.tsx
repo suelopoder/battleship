@@ -4,7 +4,7 @@ import { Position, ALIGNMENT, HIT_RESULT, API_GAME_STATUS } from './constants';
 import Board from './boards/Board';
 import { BoatData } from './Boat';
 import { GAME_SATES } from './game-states/constants';
-import AddingBoat from './game-states/AddingBoat';
+import AddingBoats from './game-states/AddingBoats';
 import SetupGame from './game-states/SetupGame';
 import GameEnd from './game-states/GameEnd';
 import ShotBoard, { Shot } from './boards/ShotBoard';
@@ -106,7 +106,7 @@ function App() {
           }
         />
         {gameState === GAME_SATES.ADDING_BOAT &&
-          <AddingBoat
+          <AddingBoats
             alignment={alignment}
             setAlignment={setAlignment}
             size={size}
