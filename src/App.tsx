@@ -8,7 +8,7 @@ import AddingBoat from './game-states/AddingBoat';
 import SetupGame from './game-states/SetupGame';
 import GameEnd from './game-states/GameEnd';
 import ShotBoard, { Shot } from './boards/ShotBoard';
-import { isValidBoatPosition, generateRandom, shotOnTarget } from './helpers';
+import { isValidBoatPosition, shotOnTarget } from './helpers';
 import API from './API';
 
 const getRandomName = () => `Annon_${Math.floor(Math.random()*100)}`;
@@ -45,28 +45,28 @@ function App() {
     ]);
 
     if (playResult.gameStatus !== API_GAME_STATUS.ONGOING) {
+      console.log('User won');
       setTimeout(() => setGameState(GAME_SATES.END), AI_DELAY);
       return;
     }
 
     setPlayerTurn(false);
-    setTimeout(() => randomAIPlay(), AI_DELAY);
+    waitForFoePlay();
   }
 
-  const randomAIPlay = () => {
-    const generatePlay = () => new Position(generateRandom(), generateRandom());
-    const wasPlayed = (history: Shot[], position: Position) =>
-      history.find(s => s.position.equals(position));
+  const waitForFoePlay = async () => {
+    const foePlay = await API.getFoePlay();
 
-    let currentPlay = generatePlay();
-    while (wasPlayed(foeShotHistory, currentPlay)) {
-      currentPlay = generatePlay();
+    if (foePlay.gameStatus !== API_GAME_STATUS.ONGOING) {
+      console.log('Foe won');
+      setTimeout(() => setGameState(GAME_SATES.END), AI_DELAY);
+      return;
     }
 
     setFoeShotHistory([
       ...foeShotHistory, {
-        position: currentPlay,
-        data: shotOnTarget(boats)(currentPlay) ? 'o' : 'x',
+        position: foePlay.playedPosition,
+        data: shotOnTarget(boats)(foePlay.playedPosition) ? 'o' : 'x',
       }
     ]);
     setPlayerTurn(true);
