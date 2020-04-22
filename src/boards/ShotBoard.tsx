@@ -13,13 +13,14 @@ type ShotBoardProps = {
   onShot: (position: Position) => void,
   playerTurn: boolean,
   username: string,
+  foeName: string,
 }
 
 const ShotBoard = (props: ShotBoardProps) => {
-  const { history, onShot, playerTurn, username } = props;
+  const { history, onShot, playerTurn, username, foeName } = props;
   return (
     <div className="shot-board">
-      <h2>{playerTurn ? `Your turn ${username}!` : 'Waiting...'}</h2>
+      <h2>{playerTurn ? `Your turn ${username}!` : `Waiting on ${foeName}`}</h2>
       <div style={{ height: PIXEL_SIZE, width: PIXEL_SIZE, position: 'relative' }}>
         {BOARD_ARRAY.map((col, x) =>
           col.map((y) => {

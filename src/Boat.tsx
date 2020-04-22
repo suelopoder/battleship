@@ -4,7 +4,7 @@ import { CELL_SPACE, CELL_SIZE, Position, ALIGNMENT } from './constants';
 export interface BoatData {
   position: Position,
   size: number,
-  alignment: string, // FIXME use ALIGNMENT
+  alignment: ALIGNMENT,
   color?: string, // FIXME smell for bad design
 };
 

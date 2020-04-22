@@ -2,12 +2,14 @@ import React from 'react';
 
 type GameEndProps = {
   onRestart: () => void,
+  userWon: boolean,
 };
 
-const GameEnd = (props: GameEndProps) => (
+const GameEnd = ({ onRestart, userWon }: GameEndProps) => (
   <div>
-    <h1>Thanks for playing!</h1>
-    <input type="submit" value="Play again" onClick={() => props.onRestart()} />
+    <h1>{userWon ? '🏆 You win!' : '💩 You lose'}</h1>
+    <h2>Thanks for playing!</h2>
+    <input type="submit" value="Play again" onClick={() => onRestart()} />
   </div>
 );
 

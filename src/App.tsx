@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import { Position, ALIGNMENT, AI_DELAY, HIT_RESULT, API_GAME_STATUS } from './constants';
+import { Position, ALIGNMENT, HIT_RESULT, API_GAME_STATUS } from './constants';
 import Board from './boards/Board';
 import { BoatData } from './Boat';
 import { GAME_SATES } from './game-states/constants';
@@ -23,6 +23,8 @@ function App() {
   const [shotHistory, setShotHistory] = useState<Shot[]>([]);
   const [foeShotHistory, setFoeShotHistory] = useState<Shot[]>([]);
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
+  const [foeName, setFoeName] = useState<string>('');
+  const [error, setError] = useState<string | undefined>();
 
   const addBoat = (boat: BoatData) => {
     if (isValidBoatPosition(boats)(boat) && gameState === GAME_SATES.ADDING_BOAT) {
@@ -45,8 +47,7 @@ function App() {
     ]);
 
     if (playResult.gameStatus !== API_GAME_STATUS.ONGOING) {
-      console.log('User won');
-      setTimeout(() => setGameState(GAME_SATES.END), AI_DELAY);
+      setGameState(GAME_SATES.END);
       return;
     }
 
@@ -58,8 +59,7 @@ function App() {
     const foePlay = await API.getFoePlay();
 
     if (foePlay.gameStatus !== API_GAME_STATUS.ONGOING) {
-      console.log('Foe won');
-      setTimeout(() => setGameState(GAME_SATES.END), AI_DELAY);
+      setGameState(GAME_SATES.END);
       return;
     }
 
@@ -73,11 +73,17 @@ function App() {
   }
 
   const onStart = async () => {
-    await API.startGame(boats);
+    const response = await API.startGame(boats);
+    if (response.status !== 'ok') {
+      setError(response.error);
+      return;
+    }
+    setFoeName(response.foeName);
     setGameState(GAME_SATES.GAME_STARTED);
   }
 
   const onRestart = () => {
+    setError(undefined);
     setBoats([]);
     setFoeShotHistory([]);
     setPlayerTurn(true);
@@ -108,9 +114,10 @@ function App() {
             onDone={() => setGameState(GAME_SATES.SETUP)}
           />
         }
-        {(gameState === GAME_SATES.END || gameState === GAME_SATES.GAME_STARTED) &&
+        {foeName && (gameState === GAME_SATES.END || gameState === GAME_SATES.GAME_STARTED) &&
           <ShotBoard
             username={username}
+            foeName={foeName}
             playerTurn={playerTurn}
             history={shotHistory}
             onShot={onShot}
@@ -118,15 +125,19 @@ function App() {
         }
         {gameState === GAME_SATES.SETUP &&
           <SetupGame
-            onAddBoat={() => setGameState(GAME_SATES.ADDING_BOAT)}
+            onAddBoat={() => {
+              setError(undefined);
+              setGameState(GAME_SATES.ADDING_BOAT);
+            }}
             onStart={onStart}
             username={username}
             serUsername={serUsername}
+            error={error}
           />
         }
       </div>
       {gameState === GAME_SATES.END &&
-        <GameEnd onRestart={onRestart}/>
+        <GameEnd onRestart={onRestart} userWon={playerTurn} />
       }
     </div>
   );

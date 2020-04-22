@@ -3,7 +3,7 @@ import { ALIGNMENT } from '../constants';
 
 interface AddingBoatProps {
   alignment: string,
-  setAlignment: (alignment: string) => void,
+  setAlignment: (alignment: ALIGNMENT) => void,
   size: number,
   setSize: (size: number) => void,
   onDone: () => void,

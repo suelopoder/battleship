@@ -76,3 +76,6 @@ export const positionInArray = (position: Position, array: Position[]): boolean 
   }
   return false;
 }
+
+export const sleep = async (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));

@@ -1,11 +1,26 @@
 import { Position, HIT_RESULT, API_GAME_STATUS, ALIGNMENT } from './constants';
 import { BoatData } from './Boat';
-import { getBoatPositionArray, getTargetShot, positionInArray, generateRandom } from './helpers';
+import { sleep, getBoatPositionArray, getTargetShot, positionInArray, generateRandom } from './helpers';
 
 const foeBoats: BoatData[] = [];
 const userHits: Position[] = [];
 const sankFoeBoats: BoatData[] = [];
 const foePlays: Position[] = [];
+
+// === all players must have: ===
+// 1 boat size 5
+// 2 boats size 4
+// 3 boats size 3
+// 4 boats size 2
+// Total 10 boats
+
+const validateBoatSet = (boats: BoatData[]): string | null => {
+  if (boats.length !== 10) {
+    return 'You must have exactly 10 boats';
+  }
+
+  return null;
+}
 
 type PlayResult = {
   playedPosition: Position,
@@ -15,9 +30,25 @@ type PlayResult = {
   foeBoats?: BoatData[],
 }
 
-const startGame = async (userBoats: BoatData[]) => {
+type StartGameResponse =
+  { status: 'ok', foeName: string } |
+  { status: 'error', error: string }
+;
+
+const startGame = async (userBoats: BoatData[]) : Promise<StartGameResponse> => {
+  const result = validateBoatSet(userBoats);
+  if (result !== null) {
+    return {
+      status: 'error',
+      error: result,
+    };
+  }
+
   foeBoats.push({ position: new Position(2, 2), alignment: ALIGNMENT.VERTICAL, size: 5 });
-  return 'ok';
+  return {
+    status: 'ok',
+    foeName: 'AI',
+  };
 };
 
 const isBoatDown = (boat: BoatData): boolean => {
@@ -67,6 +98,7 @@ const getFoePlay = async (): Promise<PlayResult> => {
 
   foePlays.push(currentPlay);
 
+  await sleep(2000);
   return {
     playedPosition: currentPlay,
     gameStatus: API_GAME_STATUS.ONGOING,
