@@ -8,7 +8,7 @@ import AddingBoats from './game-states/AddingBoats';
 import SetupGame from './game-states/SetupGame';
 import GameEnd from './game-states/GameEnd';
 import ShotBoard, { Shot } from './boards/ShotBoard';
-import { isValidBoatPosition, shotOnTarget } from './helpers';
+import { isValidBoatPosition, shotOnTarget, generateRandomBoatSet } from './helpers';
 import API from './API';
 
 const getRandomName = () => `Annon_${Math.floor(Math.random()*100)}`;
@@ -129,6 +129,7 @@ function App() {
               setError(undefined);
               setGameState(GAME_SATES.ADDING_BOAT);
             }}
+            onRandomGame={() => { setBoats(generateRandomBoatSet()); }}
             onStart={onStart}
             username={username}
             serUsername={serUsername}

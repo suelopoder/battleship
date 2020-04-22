@@ -4,6 +4,48 @@ import { BoatData } from './Boat';
 export const generateRandom = (max:number = BOARD_SIZE): number =>
   Math.floor(Math.random() * max);
 
+export const getRandomPosition = () =>
+  new Position(generateRandom(), generateRandom());
+
+// === all players must have: ===
+// 1 boat size 5
+// 2 boats size 4
+// 3 boats size 3
+// 4 boats size 2
+// Total 10 boats
+const SIZE_AMOUNTS = [ // size, amoutn of boats
+  [1, 5],
+  [2, 4],
+  [3, 3],
+  [4, 2],
+];
+
+const getRandomAlignment = () =>
+  Math.random() > 0.5 ? ALIGNMENT.HORIZONTAL : ALIGNMENT.VERTICAL;
+
+export const generateRandomBoatSet = (): BoatData[] => {
+  const boatSet: BoatData[] = [];
+
+  for (const sizeAmount of SIZE_AMOUNTS) {
+    const isValid = isValidBoatPosition(boatSet);
+    const [amount, size] = sizeAmount;
+    for (let i = 0; i < amount; i++) {
+      let nextPlay: BoatData;
+      do {
+        nextPlay = {
+          size,
+          position: getRandomPosition(),
+          alignment: getRandomAlignment(),
+        };
+      } while (!isValid(nextPlay));
+
+      boatSet.push(nextPlay);
+    }
+  }
+
+  return boatSet;
+}
+
 export const getBoatPositionArray = (boat: BoatData): Position[] => {
   if (boat.alignment === ALIGNMENT.HORIZONTAL) {
     return [...Array(boat.size).keys()].map(index =>

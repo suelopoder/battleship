@@ -5,7 +5,6 @@ A battleship game
 ## TODO
 
 - improve error feedback and validation for boat setup
-- generate random set for user
 - generate valid set for AI
 - migrate most of the state to API
 - add server

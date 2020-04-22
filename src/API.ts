@@ -1,18 +1,11 @@
 import { Position, HIT_RESULT, API_GAME_STATUS, ALIGNMENT } from './constants';
 import { BoatData } from './Boat';
-import { sleep, getBoatPositionArray, getTargetShot, positionInArray, generateRandom } from './helpers';
+import { getBoatPositionArray, getTargetShot, positionInArray, getRandomPosition } from './helpers';
 
 const foeBoats: BoatData[] = [];
 const userHits: Position[] = [];
 const sankFoeBoats: BoatData[] = [];
 const foePlays: Position[] = [];
-
-// === all players must have: ===
-// 1 boat size 5
-// 2 boats size 4
-// 3 boats size 3
-// 4 boats size 2
-// Total 10 boats
 
 const validateBoatSet = (boats: BoatData[]): string | null => {
   if (boats.length !== 10) {
@@ -86,19 +79,17 @@ const userPlay = async (position: Position): Promise<PlayResult> => {
   };
 };
 
-const generatePlay = () => new Position(generateRandom(), generateRandom());
 const wasPlayed = (history: Position[], position: Position) =>
   history.find(s => s.equals(position));
 
 const getFoePlay = async (): Promise<PlayResult> => {
-  let currentPlay = generatePlay();
+  let currentPlay = getRandomPosition();
   while (wasPlayed(foePlays, currentPlay)) {
-    currentPlay = generatePlay();
+    currentPlay = getRandomPosition();
   }
 
   foePlays.push(currentPlay);
 
-  await sleep(2000);
   return {
     playedPosition: currentPlay,
     gameStatus: API_GAME_STATUS.ONGOING,
