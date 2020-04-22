@@ -1,8 +1,8 @@
-import { Position, HIT_RESULT, API_GAME_STATUS, ALIGNMENT } from './constants';
+import { Position, HIT_RESULT, API_GAME_STATUS } from './constants';
 import { BoatData } from './Boat';
-import { getBoatPositionArray, getTargetShot, positionInArray, getRandomPosition } from './helpers';
+import { getBoatPositionArray, getTargetShot, positionInArray, getRandomPosition, generateRandomBoatSet } from './helpers';
 
-const foeBoats: BoatData[] = [];
+let foeBoats: BoatData[] = [];
 const userHits: Position[] = [];
 const sankFoeBoats: BoatData[] = [];
 const foePlays: Position[] = [];
@@ -37,7 +37,8 @@ const startGame = async (userBoats: BoatData[]) : Promise<StartGameResponse> => 
     };
   }
 
-  foeBoats.push({ position: new Position(2, 2), alignment: ALIGNMENT.VERTICAL, size: 5 });
+  foeBoats = generateRandomBoatSet();
+
   return {
     status: 'ok',
     foeName: 'AI',

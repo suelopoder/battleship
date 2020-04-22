@@ -4,6 +4,8 @@ A battleship game
 
 ## TODO
 
+- user shouldn be able to play twice the same move
+- edit user boats
 - improve error feedback and validation for boat setup
 - generate valid set for AI
 - migrate most of the state to API
