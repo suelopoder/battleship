@@ -7,9 +7,18 @@ type SetupGameProps = {
   username: string,
   serUsername: (username: string) => void,
   error?: string,
+  startLabel: string,
 }
 
-const SetupGame = ({ onAddBoat, onStart, username, serUsername, error, onRandomGame }: SetupGameProps) => (
+const SetupGame = ({
+  onAddBoat,
+  onStart,
+  username,
+  serUsername,
+  error,
+  onRandomGame,
+  startLabel,
+}: SetupGameProps) => (
   <>
     <form onSubmit={e => e.preventDefault()}>
       <div>
@@ -18,7 +27,7 @@ const SetupGame = ({ onAddBoat, onStart, username, serUsername, error, onRandomG
       </div>
       <button onClick={onAddBoat}>Add boats</button>
       <button onClick={onRandomGame}>Random game!</button>
-      <button onClick={onStart}>Start!</button>
+      <button onClick={onStart}>{startLabel}</button>
     </form>
     {error && <span>{error}</span>}
   </>

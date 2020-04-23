@@ -121,3 +121,14 @@ export const positionInArray = (position: Position, array: Position[]): boolean 
 
 export const sleep = async (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
+
+const GAME_ID_QUERY_NAME = 'gameId';
+const objFromQueryString = (): Record<string, string> =>
+  window.location.search.replace('?', '').split('&').reduce((obj, pair) => {
+    const [key, value] = pair.split('=');
+    return {
+      ...obj,
+      [key]: value,
+    }
+  }, {});
+export const getGameId = (): string => objFromQueryString()[GAME_ID_QUERY_NAME];

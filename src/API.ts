@@ -1,19 +1,11 @@
 import { Position, HIT_RESULT, API_GAME_STATUS } from './constants';
 import { BoatData } from './Boat';
-import { getBoatPositionArray, getTargetShot, positionInArray, getRandomPosition, generateRandomBoatSet } from './helpers';
+import { getBoatPositionArray, getTargetShot, positionInArray, getRandomPosition } from './helpers';
 
 let foeBoats: BoatData[] = [];
 const userHits: Position[] = [];
 const sankFoeBoats: BoatData[] = [];
 const foePlays: Position[] = [];
-
-const validateBoatSet = (boats: BoatData[]): string | null => {
-  if (boats.length !== 10) {
-    return 'You must have exactly 10 boats';
-  }
-
-  return null;
-}
 
 type PlayResult = {
   playedPosition: Position,
@@ -24,26 +16,44 @@ type PlayResult = {
 }
 
 type StartGameResponse =
-  { status: 'ok', foeName: string } |
-  { status: 'error', error: string }
+  { status: 'ok', foeName: string, gameId: string } |
+  { status: 'error', error: string } |
+  { status: 'waiting', gameId: string }
 ;
 
-const startGame = async (userBoats: BoatData[]) : Promise<StartGameResponse> => {
-  const result = validateBoatSet(userBoats);
-  if (result !== null) {
-    return {
-      status: 'error',
-      error: result,
-    };
-  }
-
-  foeBoats = generateRandomBoatSet();
-
-  return {
-    status: 'ok',
-    foeName: 'AI',
+const startGame = async (username: string, userBoats: BoatData[]) : Promise<StartGameResponse> => {
+  const body = {
+    boats: userBoats,
+    username: username,
   };
+  const res = await fetch('/api/start-game', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: new Headers({ 'Content-Type': 'application/json' })
+  });
+  try {
+    return await res.json();
+  } catch (error) {
+    return { status: 'error', error: error.message };
+  }
 };
+
+const joinGame = async (gameId: string, username: string, userBoats: BoatData[]): Promise<StartGameResponse> => {
+  const body = {
+    boats: userBoats,
+    username: username,
+  };
+  const res = await fetch(`/api/join/${gameId}`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: new Headers({ 'Content-Type': 'application/json' })
+  });
+  try {
+    return await res.json();
+  } catch (error) {
+    return { status: 'error', error: error.message };
+  }
+}
 
 const isBoatDown = (boat: BoatData): boolean => {
   const boatPositions = getBoatPositionArray(boat);
@@ -101,6 +111,7 @@ const getFoePlay = async (): Promise<PlayResult> => {
 
 export default {
   startGame,
+  joinGame,
   userPlay,
   getFoePlay,
 };

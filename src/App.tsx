@@ -13,7 +13,11 @@ import API from './API';
 
 const getRandomName = () => `Annon_${Math.floor(Math.random()*100)}`;
 
-function App() {
+type AppPros = {
+  gameId: string | null
+};
+
+function App(props: AppPros) {
   const [gameState, setGameState] = useState(GAME_SATES.SETUP);
   const [selectedCell, setSelectedCell] = useState<Position | undefined>();
   const [alignment, setAlignment] = useState(ALIGNMENT.HORIZONTAL);
@@ -25,6 +29,7 @@ function App() {
   const [playerTurn, setPlayerTurn] = useState<boolean>(true);
   const [foeName, setFoeName] = useState<string>('');
   const [error, setError] = useState<string | undefined>();
+  const [gameId, setGameId] = useState<string>();
 
   const addBoat = (boat: BoatData) => {
     if (isValidBoatPosition(boats)(boat) && gameState === GAME_SATES.ADDING_BOAT) {
@@ -73,11 +78,21 @@ function App() {
   }
 
   const onStart = async () => {
-    const response = await API.startGame(boats);
-    if (response.status !== 'ok') {
+    const response = !props.gameId
+      ? await API.startGame(username, boats)
+      : await API.joinGame(props.gameId, username, boats);
+
+    if (response.status === 'error') {
       setError(response.error);
       return;
     }
+
+    if (response.status === 'waiting') {
+      setGameId(response.gameId);
+      setError(`Share this url with a friend to play: http://localhost:3000/join?gameId=${response.gameId}`);
+      return;
+    }
+
     setFoeName(response.foeName);
     setGameState(GAME_SATES.GAME_STARTED);
   }
@@ -88,7 +103,7 @@ function App() {
     setFoeShotHistory([]);
     setPlayerTurn(true);
     setShotHistory([]);
-    setGameState(GAME_SATES.SETUP)
+    setGameState(GAME_SATES.SETUP);
   }
 
   return (
@@ -134,6 +149,7 @@ function App() {
             username={username}
             serUsername={serUsername}
             error={error}
+            startLabel={props.gameId ? 'Join!' : 'Start'}
           />
         }
       </div>
