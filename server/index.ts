@@ -1,5 +1,5 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import * as path from 'path';
 const bodyParser = require('body-parser');
 
 const app = express();

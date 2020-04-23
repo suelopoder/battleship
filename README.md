@@ -13,7 +13,7 @@ Go to <https://localhost:3000>
 
 ## TODO
 
-- make server use typescript
+- Build server dist
 - user shouldn be able to play twice the same move
 - handle API HTTP errors
 - edit user boats
